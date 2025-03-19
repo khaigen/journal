@@ -8,7 +8,7 @@ import "./App.css"
 
 // This URL can be changed for deployment
 const CSV_URL =
-  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Running%20information%20-%20Running%20Data-2-nq3Oi4dX1Xali5XlQ1R7r2grTs6YCJ.csv"
+  "https://www.dropbox.com/scl/fi/hgkaw5kd1rr7clqfk52wd/Running-information-Running-Data-2.csv?rlkey=xtqgcbeupqma56m440otdmjsm&st=qd205nfn&dl=0"
 
 function App() {
   const [runData, setRunData] = useState([])
