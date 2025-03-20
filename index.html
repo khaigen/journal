@@ -17,40 +17,82 @@
     </header>
 
     <main>
-      <section class="summary-section">
-        <div class="card">
-          <h2>This Week</h2>
-          <div class="stats-grid">
-            <div class="stat">
-              <h3>Distance</h3>
-              <p id="weekly-distance" class="stat-value">0 km</p>
-            </div>
-            <div class="stat">
-              <h3>Time</h3>
-              <p id="weekly-time" class="stat-value">0h 0m</p>
-            </div>
+      <section class="card">
+        <h2>This Week</h2>
+        <div class="stats-grid">
+          <div class="stat">
+            <h3>Distance</h3>
+            <p id="weekly-distance" class="stat-value">0 km</p>
           </div>
-          <div class="chart-container">
-            <div id="weekly-chart" class="simple-chart"></div>
+          <div class="stat">
+            <h3>Time</h3>
+            <p id="weekly-time" class="stat-value">0h 0m</p>
           </div>
+        </div>
+        <div class="weekly-breakdown" id="weekly-breakdown">
+          <!-- Weekly breakdown will be inserted here -->
         </div>
       </section>
 
-      <section class="history-section">
-        <div class="card">
-          <h2>Weekly Mileage</h2>
-          <div class="chart-container">
-            <div id="history-chart" class="simple-chart"></div>
-          </div>
+      <section class="card">
+        <h2>Weekly Mileage</h2>
+        <div class="weekly-history" id="weekly-history">
+          <!-- Weekly history will be inserted here -->
         </div>
       </section>
 
-      <section class="runs-section">
-        <h2>Recent Runs</h2>
-        <div id="runs-container" class="runs-grid">
-          <!-- Run cards will be inserted here -->
+      <section>
+        <div class="section-header">
+          <h2>Recent Runs</h2>
+          <button id="add-run-btn" class="add-run-btn">Add Run</button>
+        </div>
+        <div id="runs-container" class="runs-list">
+          <!-- Run items will be inserted here -->
         </div>
       </section>
+
+      <!-- Add Run Modal -->
+      <div id="add-run-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2>Add New Run</h2>
+          <form id="add-run-form">
+            <div class="form-group">
+              <label for="run-date">Date</label>
+              <input type="date" id="run-date" required>
+            </div>
+            <div class="form-group">
+              <label for="run-distance">Distance (km)</label>
+              <input type="number" id="run-distance" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label for="run-minutes">Minutes</label>
+              <input type="number" id="run-minutes" min="0" required>
+            </div>
+            <div class="form-group">
+              <label for="run-seconds">Seconds</label>
+              <input type="number" id="run-seconds" min="0" max="59" required>
+            </div>
+            <div class="form-group">
+              <label for="run-pace">Avg Pace (min:sec/km)</label>
+              <p class="calculated-field">Will be calculated automatically</p>
+            </div>
+            <div class="form-group">
+              <label for="run-hr">Avg Heart Rate (bpm)</label>
+              <input type="number" id="run-hr" min="0">
+            </div>
+            <div class="form-group">
+              <label for="run-rpe">RPE (1-10)</label>
+              <input type="number" id="run-rpe" min="1" max="10">
+            </div>
+            <div class="form-group">
+              <label for="run-notes">Notes</label>
+              <textarea id="run-notes"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Save Run</button>
+          </form>
+        </div>
+      </div>
     </main>
 
     <footer>
@@ -60,7 +102,7 @@
 
   <script>
     // Embedded running data
-    const runningData = [
+    let runningData = [
       {
         "Date": "2023-01-01",
         "Distance": "5.2",
@@ -556,28 +598,86 @@
     // DOM elements
     const weeklyDistanceEl = document.getElementById('weekly-distance');
     const weeklyTimeEl = document.getElementById('weekly-time');
+    const weeklyBreakdownEl = document.getElementById('weekly-breakdown');
+    const weeklyHistoryEl = document.getElementById('weekly-history');
     const runsContainerEl = document.getElementById('runs-container');
     const lastUpdatedEl = document.getElementById('last-updated');
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const weeklyChartEl = document.getElementById('weekly-chart');
-    const historyChartEl = document.getElementById('history-chart');
+    const addRunBtn = document.getElementById('add-run-btn');
+    const addRunModal = document.getElementById('add-run-modal');
+    const closeModalBtn = document.querySelector('.close-modal');
+    const addRunForm = document.getElementById('add-run-form');
+
+    // Load data from localStorage if available
+    function loadData() {
+      const savedData = localStorage.getItem('runningData');
+      if (savedData) {
+        runningData = JSON.parse(savedData);
+      }
+    }
+
+    // Save data to localStorage
+    function saveData() {
+      localStorage.setItem('runningData', JSON.stringify(runningData));
+    }
 
     // Theme toggle functionality
     themeToggleBtn.addEventListener('click', function() {
       document.body.classList.toggle('dark');
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-      
-      // Refresh charts when theme changes
-      if (weeklyData.length > 0) {
-        renderSimpleWeeklyChart(weeklyData);
-        renderSimpleHistoryChart(weeklyData);
-      }
     });
 
     // Check for saved theme preference
     if (localStorage.getItem('theme') === 'light') {
       document.body.classList.remove('dark');
     }
+
+    // Modal functionality
+    addRunBtn.addEventListener('click', function() {
+      addRunModal.style.display = 'block';
+      document.getElementById('run-date').valueAsDate = new Date();
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+      addRunModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (event.target === addRunModal) {
+        addRunModal.style.display = 'none';
+      }
+    });
+
+    // Add new run form submission
+    addRunForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const distance = parseFloat(document.getElementById('run-distance').value);
+      const minutes = parseInt(document.getElementById('run-minutes').value);
+      const seconds = parseInt(document.getElementById('run-seconds').value);
+      
+      // Calculate pace automatically
+      const totalMinutes = minutes + (seconds / 60);
+      const paceMinutes = Math.floor(totalMinutes / distance);
+      const paceSeconds = Math.round((totalMinutes / distance - paceMinutes) * 60);
+      const formattedPace = paceMinutes + ':' + (paceSeconds < 10 ? '0' + paceSeconds : paceSeconds);
+      
+      const newRun = {
+        "Date": document.getElementById('run-date').value,
+        "Distance": distance.toString(),
+        "Minutes": minutes.toString(),
+        "Seconds": seconds.toString(),
+        "Avg Pace": formattedPace,
+        "Avg HR": document.getElementById('run-hr').value || "",
+        "RPE": document.getElementById('run-rpe').value || "",
+        "Notes": document.getElementById('run-notes').value
+      };
+      
+      runningData.push(newRun);
+      saveData();
+      addRunModal.style.display = 'none';
+      updateUI(runningData, calculateWeeklyStats(runningData));
+    });
 
     // Format date for display
     function formatDate(dateStr) {
@@ -592,6 +692,20 @@
         month: 'short',
         day: 'numeric'
       });
+    }
+
+    // Format date for display in run card
+    function formatRunCardDate(dateStr) {
+      if (!dateStr) return '';
+      
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+      const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+      const day = date.getDate();
+      
+      return dayName + ', ' + monthName + ' ' + day;
     }
 
     // Get week number from date
@@ -627,7 +741,8 @@
             weekStart: weekStart,
             totalDistance: 0,
             totalMinutes: 0,
-            runs: []
+            runs: [],
+            dailyDistances: [0, 0, 0, 0, 0, 0, 0] // Mon to Sun
           });
         }
         
@@ -639,6 +754,10 @@
         week.totalDistance += distance;
         week.totalMinutes += minutes + seconds / 60;
         week.runs.push(run);
+        
+        // Add to daily distances (0 = Monday, 6 = Sunday)
+        const dayIndex = (date.getDay() + 6) % 7;
+        week.dailyDistances[dayIndex] += distance;
       });
       
       return Array.from(weekMap.values())
@@ -652,143 +771,105 @@
       return hours + 'h ' + mins + 'm';
     }
 
-    // Create a run card element
-    function createRunCard(run) {
+    // Create a run item element (list format)
+    function createRunItem(run) {
       const date = new Date(run.Date);
-      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-      const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const formattedDate = formatRunCardDate(run.Date);
       
-      const card = document.createElement('div');
-      card.className = 'run-card';
+      const item = document.createElement('div');
+      item.className = 'run-item';
       
-      card.innerHTML = `
-        <div class="run-card-header">
+      item.innerHTML = `
+        <div class="run-item-header">
           <div class="run-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v16"></path><path d="M17 4v16"></path><path d="M19 16H5"></path><path d="M19 8H5"></path></svg>
           </div>
-          <div>
-            <div class="run-card-title">Outdoor Run</div>
-            <div class="run-card-date">${dayName}, ${formattedDate}</div>
+          <div class="run-item-title">
+            <div>Outdoor Run</div>
+            <div class="run-item-date">${formattedDate}</div>
           </div>
         </div>
-        <div class="run-card-distance">${run.Distance} km</div>
-        <div class="run-card-stats">
-          <div class="run-card-stat">
-            <span class="run-card-stat-label">Duration</span>
-            <span class="run-card-stat-value">${run.Minutes}m ${run.Seconds}s</span>
+        
+        <div class="run-item-distance">${run.Distance} km</div>
+        
+        <div class="run-item-details">
+          <div class="run-item-detail">
+            <div class="detail-label">Duration</div>
+            <div class="detail-value">${run.Minutes}m ${run.Seconds}s</div>
           </div>
-          <div class="run-card-stat">
-            <span class="run-card-stat-label">Avg Pace</span>
-            <span class="run-card-stat-value">${run['Avg Pace']}/km</span>
+          <div class="run-item-detail">
+            <div class="detail-label">Avg Pace</div>
+            <div class="detail-value">${run['Avg Pace']}/km</div>
           </div>
-          <div class="run-card-stat">
-            <span class="run-card-stat-label">Heart Rate</span>
-            <span class="run-card-stat-value">${run['Avg HR'] || 'N/A'} bpm</span>
+          <div class="run-item-detail">
+            <div class="detail-label">Heart Rate</div>
+            <div class="detail-value">${run['Avg HR'] || 'N/A'} bpm</div>
           </div>
-          <div class="run-card-stat">
-            <span class="run-card-stat-label">RPE</span>
-            <span class="run-card-stat-value">${run.RPE || 'N/A'}/10</span>
+          <div class="run-item-detail">
+            <div class="detail-label">RPE</div>
+            <div class="detail-value">${run.RPE || 'N/A'}/10</div>
           </div>
         </div>
-        ${run.Notes ? '<div class="run-card-notes">' + run.Notes + '</div>' : ''}
+        
+        ${run.Notes ? `<div class="run-item-notes">${run.Notes}</div>` : ''}
       `;
       
-      return card;
+      return item;
     }
 
-    // Render a simple weekly chart with divs
-    function renderSimpleWeeklyChart(data) {
-      weeklyChartEl.innerHTML = '';
+    // Render weekly breakdown
+    function renderWeeklyBreakdown(weekData) {
+      weeklyBreakdownEl.innerHTML = '';
       
-      // Get current week data
-      const currentWeek = data[data.length - 1];
-      const dailyData = [0, 0, 0, 0, 0, 0, 0];
-      const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      if (!weekData) return;
       
-      if (currentWeek) {
-        currentWeek.runs.forEach(function(run) {
-          const date = new Date(run.Date);
-          const dayIndex = (date.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
-          dailyData[dayIndex] = parseFloat(run.Distance) || 0;
-        });
-      }
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const dailyDistances = weekData.dailyDistances;
       
-      // Find max value for scaling
-      const maxValue = Math.max.apply(null, dailyData);
+      const list = document.createElement('div');
+      list.className = 'day-list';
       
-      // Create chart container
-      const chartContainer = document.createElement('div');
-      chartContainer.className = 'simple-chart-container';
-      
-      // Create bars
       for (let i = 0; i < 7; i++) {
-        const barContainer = document.createElement('div');
-        barContainer.className = 'simple-chart-bar-container';
+        const dayItem = document.createElement('div');
+        dayItem.className = 'day-item';
         
-        const label = document.createElement('div');
-        label.className = 'simple-chart-label';
-        label.textContent = labels[i];
+        dayItem.innerHTML = `
+          <div class="day-name">${days[i]}</div>
+          <div class="day-distance">${dailyDistances[i].toFixed(1)}</div>
+        `;
         
-        const bar = document.createElement('div');
-        bar.className = 'simple-chart-bar';
-        
-        const height = maxValue > 0 ? (dailyData[i] / maxValue) * 100 : 0;
-        bar.style.height = height + '%';
-        
-        const value = document.createElement('div');
-        value.className = 'simple-chart-value';
-        value.textContent = dailyData[i].toFixed(1);
-        
-        barContainer.appendChild(bar);
-        barContainer.appendChild(label);
-        barContainer.appendChild(value);
-        chartContainer.appendChild(barContainer);
+        list.appendChild(dayItem);
       }
       
-      weeklyChartEl.appendChild(chartContainer);
+      weeklyBreakdownEl.appendChild(list);
     }
 
-    // Render a simple history chart with divs
-    function renderSimpleHistoryChart(data) {
-      historyChartEl.innerHTML = '';
+    // Render weekly history
+    function renderWeeklyHistory(weeklyData) {
+      weeklyHistoryEl.innerHTML = '';
       
-      // Extract data
-      const distances = data.map(function(week) { return week.totalDistance; });
+      // Take the last 8 weeks
+      const recentWeeks = weeklyData.slice(-8);
       
-      // Find max value for scaling
-      const maxValue = Math.max.apply(null, distances);
+      const list = document.createElement('div');
+      list.className = 'week-list';
       
-      // Create chart container
-      const chartContainer = document.createElement('div');
-      chartContainer.className = 'simple-chart-container';
+      recentWeeks.forEach(function(week) {
+        const date = week.weekStart;
+        const monthDay = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        const weekItem = document.createElement('div');
+        weekItem.className = 'week-item';
+        
+        weekItem.innerHTML = `
+          <div class="week-date">${monthDay}</div>
+          <div class="week-distance">${week.totalDistance.toFixed(1)}</div>
+        `;
+        
+        list.appendChild(weekItem);
+      });
       
-      // Create bars
-      for (let i = 0; i < distances.length; i++) {
-        const barContainer = document.createElement('div');
-        barContainer.className = 'simple-chart-bar-container';
-        
-        const date = data[i].weekStart;
-        const label = document.createElement('div');
-        label.className = 'simple-chart-label';
-        label.textContent = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        
-        const bar = document.createElement('div');
-        bar.className = 'simple-chart-bar';
-        
-        const height = maxValue > 0 ? (distances[i] / maxValue) * 100 : 0;
-        bar.style.height = height + '%';
-        
-        const value = document.createElement('div');
-        value.className = 'simple-chart-value';
-        value.textContent = distances[i].toFixed(1);
-        
-        barContainer.appendChild(bar);
-        barContainer.appendChild(label);
-        barContainer.appendChild(value);
-        chartContainer.appendChild(barContainer);
-      }
-      
-      historyChartEl.appendChild(chartContainer);
+      weeklyHistoryEl.appendChild(list);
     }
 
     // Update UI with running data
@@ -798,9 +879,13 @@
       if (currentWeek) {
         weeklyDistanceEl.textContent = currentWeek.totalDistance.toFixed(2) + ' km';
         weeklyTimeEl.textContent = formatTime(currentWeek.totalMinutes);
+        renderWeeklyBreakdown(currentWeek);
       }
       
-      // Update run cards
+      // Render weekly history
+      renderWeeklyHistory(weeklyData);
+      
+      // Update run items
       runsContainerEl.innerHTML = '';
       const recentRuns = data
         .filter(function(run) { return run.Distance; })
@@ -808,7 +893,7 @@
         .slice(0, 6);
       
       recentRuns.forEach(function(run) {
-        runsContainerEl.appendChild(createRunCard(run));
+        runsContainerEl.appendChild(createRunItem(run));
       });
       
       // Update last updated date
@@ -816,15 +901,17 @@
       if (lastRun) {
         lastUpdatedEl.textContent = formatDate(lastRun.Date);
       }
-      
-      // Initialize charts
-      renderSimpleWeeklyChart(weeklyData);
-      renderSimpleHistoryChart(weeklyData);
     }
 
-    // Process the data and update the UI
-    const weeklyData = calculateWeeklyStats(runningData);
-    updateUI(runningData, weeklyData);
+    // Initialize the application
+    function init() {
+      loadData();
+      const weeklyData = calculateWeeklyStats(runningData);
+      updateUI(runningData, weeklyData);
+    }
+
+    // Start the application
+    init();
   </script>
 </body>
 </html>
