@@ -60,7 +60,817 @@
     </footer>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    // Embedded running data
+    const runningData = [
+      {
+        "Date": "2023-01-01",
+        "Distance": "5.2",
+        "Minutes": "30",
+        "Seconds": "15",
+        "Avg Pace": "5:49",
+        "Avg HR": "145",
+        "RPE": "6",
+        "Notes": "Easy run to start the year"
+      },
+      {
+        "Date": "2023-01-03",
+        "Distance": "8.4",
+        "Minutes": "48",
+        "Seconds": "30",
+        "Avg Pace": "5:46",
+        "Avg HR": "152",
+        "RPE": "7",
+        "Notes": "Hill repeats"
+      },
+      {
+        "Date": "2023-01-05",
+        "Distance": "4.1",
+        "Minutes": "22",
+        "Seconds": "45",
+        "Avg Pace": "5:33",
+        "Avg HR": "148",
+        "RPE": "5",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-01-08",
+        "Distance": "12.3",
+        "Minutes": "72",
+        "Seconds": "10",
+        "Avg Pace": "5:52",
+        "Avg HR": "155",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-01-10",
+        "Distance": "6.5",
+        "Minutes": "35",
+        "Seconds": "20",
+        "Avg Pace": "5:26",
+        "Avg HR": "150",
+        "RPE": "6",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-01-12",
+        "Distance": "5.0",
+        "Minutes": "28",
+        "Seconds": "45",
+        "Avg Pace": "5:45",
+        "Avg HR": "146",
+        "RPE": "5",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-01-15",
+        "Distance": "14.2",
+        "Minutes": "85",
+        "Seconds": "30",
+        "Avg Pace": "6:01",
+        "Avg HR": "158",
+        "RPE": "9",
+        "Notes": "Long run with hills"
+      },
+      {
+        "Date": "2023-01-17",
+        "Distance": "7.3",
+        "Minutes": "40",
+        "Seconds": "15",
+        "Avg Pace": "5:31",
+        "Avg HR": "153",
+        "RPE": "7",
+        "Notes": "Intervals"
+      },
+      {
+        "Date": "2023-01-19",
+        "Distance": "5.5",
+        "Minutes": "31",
+        "Seconds": "40",
+        "Avg Pace": "5:45",
+        "Avg HR": "147",
+        "RPE": "6",
+        "Notes": "Easy recovery"
+      },
+      {
+        "Date": "2023-01-22",
+        "Distance": "16.1",
+        "Minutes": "98",
+        "Seconds": "20",
+        "Avg Pace": "6:06",
+        "Avg HR": "156",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-01-24",
+        "Distance": "8.2",
+        "Minutes": "44",
+        "Seconds": "50",
+        "Avg Pace": "5:28",
+        "Avg HR": "154",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-01-26",
+        "Distance": "6.0",
+        "Minutes": "34",
+        "Seconds": "10",
+        "Avg Pace": "5:42",
+        "Avg HR": "149",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-01-29",
+        "Distance": "18.5",
+        "Minutes": "114",
+        "Seconds": "45",
+        "Avg Pace": "6:12",
+        "Avg HR": "160",
+        "RPE": "9",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-01-31",
+        "Distance": "7.8",
+        "Minutes": "42",
+        "Seconds": "30",
+        "Avg Pace": "5:27",
+        "Avg HR": "155",
+        "RPE": "7",
+        "Notes": "Speed work"
+      },
+      {
+        "Date": "2023-02-02",
+        "Distance": "5.5",
+        "Minutes": "31",
+        "Seconds": "15",
+        "Avg Pace": "5:41",
+        "Avg HR": "148",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-02-05",
+        "Distance": "20.1",
+        "Minutes": "125",
+        "Seconds": "30",
+        "Avg Pace": "6:14",
+        "Avg HR": "162",
+        "RPE": "9",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-02-07",
+        "Distance": "8.5",
+        "Minutes": "46",
+        "Seconds": "20",
+        "Avg Pace": "5:27",
+        "Avg HR": "156",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-02-09",
+        "Distance": "6.2",
+        "Minutes": "35",
+        "Seconds": "45",
+        "Avg Pace": "5:46",
+        "Avg HR": "150",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-02-12",
+        "Distance": "15.3",
+        "Minutes": "92",
+        "Seconds": "10",
+        "Avg Pace": "6:01",
+        "Avg HR": "158",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-02-14",
+        "Distance": "7.5",
+        "Minutes": "41",
+        "Seconds": "30",
+        "Avg Pace": "5:32",
+        "Avg HR": "154",
+        "RPE": "7",
+        "Notes": "Intervals"
+      },
+      {
+        "Date": "2023-02-16",
+        "Distance": "5.8",
+        "Minutes": "33",
+        "Seconds": "20",
+        "Avg Pace": "5:45",
+        "Avg HR": "149",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-02-19",
+        "Distance": "21.1",
+        "Minutes": "132",
+        "Seconds": "45",
+        "Avg Pace": "6:17",
+        "Avg HR": "163",
+        "RPE": "10",
+        "Notes": "Half marathon"
+      },
+      {
+        "Date": "2023-02-21",
+        "Distance": "5.0",
+        "Minutes": "30",
+        "Seconds": "0",
+        "Avg Pace": "6:00",
+        "Avg HR": "145",
+        "RPE": "5",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-02-23",
+        "Distance": "7.2",
+        "Minutes": "40",
+        "Seconds": "10",
+        "Avg Pace": "5:35",
+        "Avg HR": "152",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-02-26",
+        "Distance": "12.5",
+        "Minutes": "74",
+        "Seconds": "30",
+        "Avg Pace": "5:58",
+        "Avg HR": "156",
+        "RPE": "7",
+        "Notes": "Medium long run"
+      },
+      {
+        "Date": "2023-02-28",
+        "Distance": "8.0",
+        "Minutes": "43",
+        "Seconds": "45",
+        "Avg Pace": "5:28",
+        "Avg HR": "155",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-03-02",
+        "Distance": "6.5",
+        "Minutes": "37",
+        "Seconds": "20",
+        "Avg Pace": "5:44",
+        "Avg HR": "151",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-03-05",
+        "Distance": "22.5",
+        "Minutes": "140",
+        "Seconds": "15",
+        "Avg Pace": "6:14",
+        "Avg HR": "165",
+        "RPE": "9",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-03-07",
+        "Distance": "8.8",
+        "Minutes": "48",
+        "Seconds": "30",
+        "Avg Pace": "5:31",
+        "Avg HR": "157",
+        "RPE": "7",
+        "Notes": "Speed work"
+      },
+      {
+        "Date": "2023-03-09",
+        "Distance": "6.0",
+        "Minutes": "34",
+        "Seconds": "45",
+        "Avg Pace": "5:48",
+        "Avg HR": "150",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-03-12",
+        "Distance": "16.2",
+        "Minutes": "98",
+        "Seconds": "10",
+        "Avg Pace": "6:03",
+        "Avg HR": "159",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-03-14",
+        "Distance": "9.2",
+        "Minutes": "50",
+        "Seconds": "30",
+        "Avg Pace": "5:29",
+        "Avg HR": "158",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-03-16",
+        "Distance": "7.0",
+        "Minutes": "40",
+        "Seconds": "0",
+        "Avg Pace": "5:43",
+        "Avg HR": "152",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-03-19",
+        "Distance": "24.5",
+        "Minutes": "155",
+        "Seconds": "20",
+        "Avg Pace": "6:20",
+        "Avg HR": "167",
+        "RPE": "10",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-03-21",
+        "Distance": "6.5",
+        "Minutes": "38",
+        "Seconds": "10",
+        "Avg Pace": "5:52",
+        "Avg HR": "151",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-03-23",
+        "Distance": "8.5",
+        "Minutes": "47",
+        "Seconds": "30",
+        "Avg Pace": "5:35",
+        "Avg HR": "156",
+        "RPE": "7",
+        "Notes": "Intervals"
+      },
+      {
+        "Date": "2023-03-26",
+        "Distance": "18.0",
+        "Minutes": "110",
+        "Seconds": "45",
+        "Avg Pace": "6:09",
+        "Avg HR": "160",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-03-28",
+        "Distance": "9.5",
+        "Minutes": "52",
+        "Seconds": "15",
+        "Avg Pace": "5:30",
+        "Avg HR": "158",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-03-30",
+        "Distance": "7.2",
+        "Minutes": "41",
+        "Seconds": "30",
+        "Avg Pace": "5:46",
+        "Avg HR": "153",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-04-02",
+        "Distance": "20.65",
+        "Minutes": "126",
+        "Seconds": "0",
+        "Avg Pace": "6:06",
+        "Avg HR": "162",
+        "RPE": "9",
+        "Notes": "Long run with negative splits"
+      },
+      {
+        "Date": "2023-04-04",
+        "Distance": "8.0",
+        "Minutes": "44",
+        "Seconds": "15",
+        "Avg Pace": "5:32",
+        "Avg HR": "155",
+        "RPE": "7",
+        "Notes": "Speed work"
+      },
+      {
+        "Date": "2023-04-06",
+        "Distance": "6.5",
+        "Minutes": "37",
+        "Seconds": "30",
+        "Avg Pace": "5:46",
+        "Avg HR": "151",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-04-09",
+        "Distance": "15.8",
+        "Minutes": "96",
+        "Seconds": "45",
+        "Avg Pace": "6:07",
+        "Avg HR": "158",
+        "RPE": "8",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-04-11",
+        "Distance": "9.0",
+        "Minutes": "49",
+        "Seconds": "20",
+        "Avg Pace": "5:29",
+        "Avg HR": "157",
+        "RPE": "7",
+        "Notes": "Tempo run"
+      },
+      {
+        "Date": "2023-04-13",
+        "Distance": "7.5",
+        "Minutes": "43",
+        "Seconds": "0",
+        "Avg Pace": "5:44",
+        "Avg HR": "153",
+        "RPE": "6",
+        "Notes": "Easy run"
+      },
+      {
+        "Date": "2023-04-16",
+        "Distance": "20.31",
+        "Minutes": "124",
+        "Seconds": "45",
+        "Avg Pace": "6:08",
+        "Avg HR": "163",
+        "RPE": "9",
+        "Notes": "Long run"
+      },
+      {
+        "Date": "2023-04-18",
+        "Distance": "6.0",
+        "Minutes": "35",
+        "Seconds": "10",
+        "Avg Pace": "5:52",
+        "Avg HR": "150",
+        "RPE": "6",
+        "Notes": "Recovery run"
+      },
+      {
+        "Date": "2023-04-20",
+        "Distance": "8.2",
+        "Minutes": "45",
+        "Seconds": "30",
+        "Avg Pace": "5:33",
+        "Avg HR": "156",
+        "RPE": "7",
+        "Notes": "Intervals"
+      },
+      {
+        "Date": "2023-04-23",
+        "Distance": "5.29",
+        "Minutes": "30",
+        "Seconds": "45",
+        "Avg Pace": "5:49",
+        "Avg HR": "149",
+        "RPE": "5",
+        "Notes": "Easy run, no real pains, some niggling aches here and there, but overall easy run, no pains during social after too"
+      }
+    ];
+
+    // DOM elements
+    const weeklyDistanceEl = document.getElementById('weekly-distance');
+    const weeklyTimeEl = document.getElementById('weekly-time');
+    const runsContainerEl = document.getElementById('runs-container');
+    const lastUpdatedEl = document.getElementById('last-updated');
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const loadingIndicator = document.getElementById('loading-indicator');
+
+    // Global chart variables
+    let weeklyChart = null;
+    let historyChart = null;
+
+    // Theme toggle functionality
+    themeToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      
+      // Refresh charts when theme changes
+      if (weeklyData.length > 0) {
+        initWeeklyChart(weeklyData);
+        initHistoryChart(weeklyData);
+      }
+    });
+
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.remove('dark');
+    }
+
+    // Format date for display
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Get week number from date
+    function getWeekNumber(d) {
+      const date = new Date(d);
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+      const week1 = new Date(date.getFullYear(), 0, 4);
+      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    }
+
+    // Get week start date
+    function getWeekStartDate(d) {
+      const date = new Date(d);
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      return new Date(date.setDate(diff));
+    }
+
+    // Calculate weekly stats
+    function calculateWeeklyStats(data) {
+      const weekMap = new Map();
+      
+      data.forEach(run => {
+        if (!run.Date || !run.Distance) return;
+        
+        const date = new Date(run.Date);
+        const weekStart = getWeekStartDate(date);
+        const weekKey = `${weekStart.getFullYear()}-${getWeekNumber(date)}`;
+        
+        if (!weekMap.has(weekKey)) {
+          weekMap.set(weekKey, {
+            weekStart,
+            totalDistance: 0,
+            totalMinutes: 0,
+            runs: []
+          });
+        }
+        
+        const week = weekMap.get(weekKey);
+        const distance = parseFloat(run.Distance) || 0;
+        const minutes = parseInt(run.Minutes) || 0;
+        const seconds = parseInt(run.Seconds) || 0;
+        
+        week.totalDistance += distance;
+        week.totalMinutes += minutes + seconds / 60;
+        week.runs.push(run);
+      });
+      
+      return Array.from(weekMap.values())
+        .sort((a, b) => a.weekStart - b.weekStart);
+    }
+
+    // Format time (minutes) to hours and minutes
+    function formatTime(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const mins = Math.round(minutes % 60);
+      return `${hours}h ${mins}m`;
+    }
+
+    // Create a run card element
+    function createRunCard(run) {
+      const date = new Date(run.Date);
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+      const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      
+      const card = document.createElement('div');
+      card.className = 'run-card';
+      
+      card.innerHTML = `
+        <div class="run-card-header">
+          <div class="run-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4v16"></path><path d="M17 4v16"></path><path d="M19 16H5"></path><path d="M19 8H5"></path></svg>
+          </div>
+          <div>
+            <div class="run-card-title">Outdoor Run</div>
+            <div class="run-card-date">${dayName}, ${formattedDate}</div>
+          </div>
+        </div>
+        <div class="run-card-distance">${run.Distance} km</div>
+        <div class="run-card-stats">
+          <div class="run-card-stat">
+            <span class="run-card-stat-label">Duration</span>
+            <span class="run-card-stat-value">${run.Minutes}m ${run.Seconds}s</span>
+          </div>
+          <div class="run-card-stat">
+            <span class="run-card-stat-label">Avg Pace</span>
+            <span class="run-card-stat-value">${run['Avg Pace']}/km</span>
+          </div>
+          <div class="run-card-stat">
+            <span class="run-card-stat-label">Heart Rate</span>
+            <span class="run-card-stat-value">${run['Avg HR'] || 'N/A'} bpm</span>
+          </div>
+          <div class="run-card-stat">
+            <span class="run-card-stat-label">RPE</span>
+            <span class="run-card-stat-value">${run.RPE || 'N/A'}/10</span>
+          </div>
+        </div>
+        ${run.Notes ? `<div class="run-card-notes">${run.Notes}</div>` : ''}
+      `;
+      
+      return card;
+    }
+
+    // Initialize weekly chart
+    function initWeeklyChart(data) {
+      const ctx = document.getElementById('weekly-chart').getContext('2d');
+      
+      // Get current week data
+      const currentWeek = data[data.length - 1];
+      const dailyData = Array(7).fill(0);
+      const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      
+      if (currentWeek) {
+        currentWeek.runs.forEach(run => {
+          const date = new Date(run.Date);
+          const dayIndex = (date.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+          dailyData[dayIndex] = parseFloat(run.Distance) || 0;
+        });
+      }
+      
+      // Check if chart already exists and destroy it
+      if (weeklyChart) {
+        weeklyChart.destroy();
+      }
+      
+      weeklyChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Distance (km)',
+            data: dailyData,
+            backgroundColor: 'rgba(255, 87, 34, 0.7)',
+            borderColor: 'rgba(255, 87, 34, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: getComputedStyle(document.body).getPropertyValue('--chart-grid')
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize history chart
+    function initHistoryChart(data) {
+      const ctx = document.getElementById('history-chart').getContext('2d');
+      
+      const labels = data.map(week => {
+        const date = week.weekStart;
+        return `${date.toLocaleDateString('en-US', { month: 'short' })} ${date.getDate()}`;
+      });
+      
+      const distances = data.map(week => week.totalDistance);
+      
+      // Check if chart already exists and destroy it
+      if (historyChart) {
+        historyChart.destroy();
+      }
+      
+      historyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Weekly Distance (km)',
+            data: distances,
+            fill: true,
+            backgroundColor: 'rgba(255, 87, 34, 0.2)',
+            borderColor: 'rgba(255, 87, 34, 1)',
+            borderWidth: 2,
+            tension: 0.1,
+            pointBackgroundColor: 'rgba(255, 87, 34, 1)',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: getComputedStyle(document.body).getPropertyValue('--chart-grid')
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--text-secondary')
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: getComputedStyle(document.body).getPropertyValue('--text-secondary'),
+                maxRotation: 45,
+                minRotation: 45
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Update UI with running data
+    function updateUI(data, weeklyData) {
+      // Remove loading indicator
+      if (loadingIndicator) {
+        loadingIndicator  {
+      // Remove loading indicator
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+      
+      // Update weekly stats
+      const currentWeek = weeklyData[weeklyData.length - 1];
+      if (currentWeek) {
+        weeklyDistanceEl.textContent = `${currentWeek.totalDistance.toFixed(2)} km`;
+        weeklyTimeEl.textContent = formatTime(currentWeek.totalMinutes);
+      }
+      
+      // Update run cards
+      runsContainerEl.innerHTML = '';
+      const recentRuns = data
+        .filter(run => run.Distance)
+        .sort((a, b) => new Date(b.Date) - new Date(a.Date))
+        .slice(0, 6);
+      
+      recentRuns.forEach(run => {
+        runsContainerEl.appendChild(createRunCard(run));
+      });
+      
+      // Update last updated date
+      const lastRun = recentRuns[0];
+      if (lastRun) {
+        lastUpdatedEl.textContent = formatDate(lastRun.Date);
+      }
+      
+      // Initialize charts
+      initWeeklyChart(weeklyData);
+      initHistoryChart(weeklyData);
+    }
+
+    // Process the data and update the UI
+    const weeklyData = calculateWeeklyStats(runningData);
+    updateUI(runningData, weeklyData);
+  </script>
 </body>
 </html>
 
